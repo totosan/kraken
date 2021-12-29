@@ -5,6 +5,7 @@ from decimal import Decimal as D
 import pprint
 import collections
 
+DEBUG = False
 class AvailableBalance(object):
     def __init__(self, *args):
        
@@ -68,18 +69,19 @@ class AvailableBalance(object):
 
             self.__availableBalaces = balance.copy()
             
-    def display(self):
+    def get_avalailable_balances(self):
         orderedBalance = collections.OrderedDict(sorted(self.__availableBalaces.items()))
-        for k, v in orderedBalance.items():
-            # convert to string for printing
-            if v == D('0') or v < 0.00001:
-                #s = '0'
-                continue
-            else:
-                s = str(v)
-            # remove trailing zeros (remnant of being decimal)
-            s = s.rstrip('0').rstrip('.') if '.' in s else s
-            #
-            print(k, s)
-        
+        if DEBUG:
+            for k, v in orderedBalance.items():
+                # convert to string for printing
+                if v == D('0') or v < 0.00001:
+                    #s = '0'
+                    continue
+                else:
+                    s = str(v)
+                # remove trailing zeros (remnant of being decimal)
+                s = s.rstrip('0').rstrip('.') if '.' in s else s
+                #
+                print(k, s)
+        return orderedBalance        
         

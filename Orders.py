@@ -1,5 +1,8 @@
 import krakenex
+from BaseQuery import BaseQuery
+import utils
 
+DEBUG = True
 class OrderState():
     open = "open"
     closed = "closed"
@@ -7,15 +10,19 @@ class OrderState():
     canceled = "canceled"
     expired = "expired"
         
-class Orders(object):
-    
-    def __init__(self, *args):
+class ClosedOrders(BaseQuery):
+    def __init__(self,config=None):
+        self._apiName = "ClosedOrders"
+        self._resultSetName = "closed"
+        
+        super().__init__(config=config)
         k = krakenex.API()
         k.load_key('kraken.key')
         self.__countOpenOrders = 0
         self.__countClosedOrders =0
         
-        options = {'trades':True}
+        options = {'trades':True, 'ofs':0}
+        self._queryConfig = options
         open_orders = k.query_private('OpenOrders',options)
         closed_orders = k.query_private('ClosedOrders', options)
         self.__orders ={}
@@ -33,8 +40,26 @@ class Orders(object):
                     self.__orders[k]=v
         
     def get_all_orders_by(self, orderstate ):
+        count = len(self.__orders)
+        currentEntries = count
         orders = self.__orders
-        for _, o in orders.items():
-            if(o["status"] == orderstate):
-                print(o['descr']['order'])
+        allOrders = []
+        while (currentEntries>0):
+
+            for k,v in self.__orders.items():
+                v['order_id']=k
+                allOrders.append(v)
+
+            self._queryConfig["ofs"]=count
+            error, self._ledger = self.(self._ledgerQueryOptions)
+            if(error):
+                break;
+            currentEntries = len(self._ledger) 
+            count = count + currentEntries
+            
+            if DEBUG:
+                for _, o in orders.items():
+                    if(o["status"] == orderstate):
+                        print(_,o['descr']['order'], utils.posix2DateTime( o["closetm"]))
+        return orders
     

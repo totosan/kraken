@@ -2,3 +2,4 @@
 .kraken
 __pycache__
 .vscode
+.venv
