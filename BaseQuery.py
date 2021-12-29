@@ -1,3 +1,4 @@
+from time import sleep
 import krakenex
 
 class BaseQuery(object):
@@ -35,11 +36,14 @@ class BaseQuery(object):
                 allResults.append(v)
 
             self._queryOptions["ofs"]=count
-            error, self._ledger = self.query(self._apiName, self._resultSetName,self._queryOptions)
+            error, results = self.query(self._apiName, self._resultSetName,self._queryOptions)
             if(error):
                 break;
-            currentEntries = len(self._ledger) 
+            currentEntries = len(results) 
             count = count + currentEntries
+            if(count % 50 == 0):
+                print("possible limit exceed for querying API. waiting some seconds.")
+                sleep(1)
             
         return allResults
             

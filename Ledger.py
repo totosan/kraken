@@ -1,3 +1,4 @@
+from time import sleep
 import krakenex
 
 class Ledger(object):
@@ -38,6 +39,8 @@ class Ledger(object):
                 break;
             currentEntries = len(self._ledger) 
             count = count + currentEntries
+            if(count % 50 ==0):
+                sleep(1)
             
         return allLedgers
             

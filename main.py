@@ -16,8 +16,14 @@ def main():
     bal = av.get_avalailable_balances()
     
     orderstate = Orders.OrderState.closed
-    o = Orders.Orders()
-    orders = o.get_all_orders_by(orderstate)
+    closedOrders = Orders.ClosedOrders()
+    closed = closedOrders.get_query_results()
+    openedOrders = Orders.OpendOrders()
+    sleep(5)
+    opened = openedOrders.get_query_results()
+    orders = []
+    [orders.append(o) for o in closed]
+    [orders.append(o) for o in opened]
     orderFile = open("orders.json","w")
     json.dump(orders, orderFile)
     
@@ -25,9 +31,11 @@ def main():
     print(f'trades history:')
     print("-------------------")
     if(path.exists("trades.json")):
+        print("loading from file")
         file = open("trades.json","r")
         trades = json.load(file)
     else:
+        print("reading through API")
         th = Trades.TradeHistroy()
         trades = th.get_tradesHistory()
         trades.sort(key=lambda x: x.get('time'))
