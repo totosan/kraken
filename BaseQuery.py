@@ -41,9 +41,9 @@ class BaseQuery(object):
                 break;
             currentEntries = len(results) 
             count = count + currentEntries
-            if(count % 50 == 0):
+            if(count % 20 == 0):
                 print("possible limit exceed for querying API. waiting some seconds.")
-                sleep(1)
+                sleep(3)
             
         return allResults
             
