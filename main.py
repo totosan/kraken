@@ -1,19 +1,20 @@
 from  os import name, path
-from io import FileIO
+from io import StringIO
 from time import sleep
-from datetime import datetime
 import json
 
-from pipe import sort
-from CsvExport import CsvExport, ExportEnum
 import utils
-import AvailableBalances
+from pipe import sort
+
+from CsvExport import CsvExport, ExportEnum
+from AvailableBalances import AvailableBalance
 from Ledgers import Ledgers
 import Orders
 import Trades
+from pandas import read_csv
 
 def main():
-    av = AvailableBalances.AvailableBalance()
+    av = AvailableBalance()
     bal = av.get_avalailable_balances()
     
     if False:
@@ -49,7 +50,7 @@ def main():
             break
     zipName = tradesHistory.SaveExportById(id)
     th = Trades.TradeHistory()
-    th.get_from_Zip(zipName)
+    
     
     print(f'ledger entries:')
     print("-------------------")
