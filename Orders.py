@@ -20,7 +20,7 @@ class ClosedOrders(BaseQuery):
         self._resultSetName = "closed"
         
     def get_query_results(self):
-        return super().get_query_results()
+        return super().get_from_API()
 
 class OpendOrders(BaseQuery):
     def __init__(self,config=None):
@@ -32,4 +32,4 @@ class OpendOrders(BaseQuery):
         self._resultSetName = "open"
         
     def get_query_results(self):
-        return super().get_query_results()
+        return super().get_from_API()

@@ -11,5 +11,5 @@ class TradeHistory(BaseQuery):
         self._resultSetName = "trades"
         
     def get_query_results(self):
-        return super().get_query_results()
+        return super().get_from_API()
     

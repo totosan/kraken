@@ -26,7 +26,7 @@ class BaseQuery(ABC):
             print(f'There were errors on reading Ledger API:{errorsPretty}')
         return errorsPretty, result
     
-    def get_query_results(self):
+    def get_from_API(self):
         _, self._queryResult = self._query(self._apiName, self._resultSetName, self._queryOptions)
         count = len(self._queryResult)
         currentEntries = count

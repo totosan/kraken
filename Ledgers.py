@@ -8,5 +8,5 @@ class Ledgers(BaseQuery):
         self._resultSetName = "ledger"
         
     def get_query_results(self):
-        return super().get_query_results()
+        return super().get_from_API()
     
