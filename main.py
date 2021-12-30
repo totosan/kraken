@@ -11,7 +11,7 @@ from AvailableBalances import AvailableBalance
 from Ledgers import Ledgers
 import Orders
 import Trades
-from pandas import read_csv
+
 
 def main():
     av = AvailableBalance()
@@ -38,19 +38,10 @@ def main():
     print()
     print(f'trades history:')
     print("-------------------")
-    tradesHistory = CsvExport(ExportEnum.trades)
-    id = utils.lastState(tradesHistory.RequestNewReport,"reportId_trades")
-    print('Wait for data to be ready')
-    while True:
-        reportDetails = tradesHistory.RetrieveReportBy(id)
-        if(reportDetails['status'] == 'Queued'):
-            print('.',end='')
-            sleep(1)
-        else:
-            break
-    zipName = tradesHistory.SaveExportById(id)
-    th = Trades.TradeHistory()
-    
+    th = Trades.TradeHistory({
+        'starttm':int(utils.dateTime2Posix("2021-01-01"))
+    })
+    data = th.get_from_Export()
     
     print(f'ledger entries:')
     print("-------------------")

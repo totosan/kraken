@@ -1,9 +1,15 @@
+from io import StringIO
 from os import path
 from time import sleep
 import zipfile
 import krakenex
-from abc import ABC
-class BaseQuery(ABC):
+
+from utils import *
+from CsvExport import CsvExport, ExportEnum
+import pandas as pd
+from typing import Optional
+
+class BaseQuery():
     
     def __init__(self, config=None):
         self._k = krakenex.API()
@@ -15,6 +21,7 @@ class BaseQuery(ABC):
         self._queryOptions = {'ofs':0}
         if(not config is None):
             self._queryOptions.update( config)
+        print(self._queryOptions)
         
     def _query(self,apiName, resultSetName,options):
         result = self._k.query_private(apiName,options)
@@ -25,6 +32,20 @@ class BaseQuery(ABC):
             errorsPretty = "\n".join(result["error"])
             print(f'There were errors on reading Ledger API:{errorsPretty}')
         return errorsPretty, result
+    
+    def _get_export_from_API(self, exportType):
+        dataHistory = CsvExport(exportType)
+        id = lastState(dataHistory.RequestNewReport,"reportId_"+exportType)
+        print('Wait for data to be ready',end='')
+        while True:
+            reportDetails = dataHistory.RetrieveReportBy(id)
+            if(reportDetails['status'] == 'Queued'):
+                print(".",end='')
+                sleep(1)
+            else:
+                break
+        zipName = dataHistory.SaveExportById(id)
+        return zipName
     
     def get_from_API(self):
         _, self._queryResult = self._query(self._apiName, self._resultSetName, self._queryOptions)
@@ -49,8 +70,12 @@ class BaseQuery(ABC):
             
         return allResults
 
-    def get_from_Zip(self, filename):
-        with zipfile.ZipFile(filename, "r") as zip:
-            info=zip.infolist()
-            for file in info:
-                zip.extract(file.filename,path.dirname(filename))
+    def _get_from_zip(self, filename) -> Optional[pd.DataFrame]:
+        input_zip=zipfile.ZipFile(filename,"r")
+        datas = [input_zip.read(name).decode("utf-8") for name in input_zip.namelist()]
+        if(len(datas)==1):
+            dataIO = StringIO(datas[0])
+            dataFrame = pd.read_csv(dataIO)
+            return dataFrame
+        else:
+            return None
