@@ -33,9 +33,9 @@ class BaseQuery():
             print(f'There were errors on reading Ledger API:{errorsPretty}')
         return errorsPretty, result
     
-    def _get_export_from_API(self, exportType):
+    def _query_export(self, exportType, startDate=None,endDate=None):
         dataHistory = CsvExport(exportType)
-        id = lastState(dataHistory.RequestNewReport,"reportId_"+exportType)
+        id = lastState(dataHistory.RequestNewReport,"reportId_"+exportType, startDate, endDate)
         print('Wait for data to be ready',end='')
         while True:
             reportDetails = dataHistory.RetrieveReportBy(id)

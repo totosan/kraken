@@ -1,3 +1,4 @@
+from datetime import datetime
 from  os import name, path
 from io import StringIO
 from time import sleep
@@ -6,7 +7,6 @@ import json
 import utils
 from pipe import sort
 
-from CsvExport import CsvExport, ExportEnum
 from AvailableBalances import AvailableBalance
 from Ledgers import Ledgers
 import Orders
@@ -38,23 +38,13 @@ def main():
     print()
     print(f'trades history:')
     print("-------------------")
-    th = Trades.TradeHistory({
-        'starttm':int(utils.dateTime2Posix("2021-01-01"))
-    })
-    data = th.get_from_Export()
+    th = Trades.TradeHistory()
+    data = th.get_from_Export(startDate=utils.date2nix(datetime(2021,1,1)))
     
     print(f'ledger entries:')
     print("-------------------")
-    ledgersHistory = CsvExport(ExportEnum.ledgers)
-    id = utils.lastState(ledgersHistory.RequestNewReport,"reportId_ledgers")
-    reportDetails = ledgersHistory.RetrieveReportBy(id)
-    while True:
-        reportDetails = tradesHistory.RetrieveReportBy(id)
-        if(reportDetails['status'] == 'Queued'):
-            sleep(1)
-        else:
-            break 
-    ledgersHistory.SaveExportById(id)
+    lh = Ledgers()
+    data = lh.get_from_Export(startDate=utils.date2nix(datetime(2021,1,1)))
 
     ledger = Ledgers({'asset':"ADA"})
     ls = utils.lastState(ledger.get_query_results,"ledgers",sorted='time')

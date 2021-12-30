@@ -32,19 +32,24 @@ class CsvExport():
         self._kraken = krakenex.API()
         # NOTE: key must have the "Export data" permission.
         self._kraken.load_key('kraken.key')
-        
+
         self._type = kindOf
         self._defaultSavePath = defaultSavePath
         
-    def RequestNewReport(self):
-        # Request report.
-        response = self._kraken.query_private(
-            'AddExport',
-            {
+    def RequestNewReport(self, startTime=None, endTime=None):
+        config = {
                 'description': 'reporting',
                 'report': self._type,
                 'format': 'CSV',
-            },
+            }
+        if(startTime):
+            config.update({'starttm':startTime})
+        if(endTime):
+            config.update({'endtm':endTime})
+                          
+        response = self._kraken.query_private(
+            'AddExport',
+            config,
         )
         report_id = response['result']['id']
         self.ReportId = report_id

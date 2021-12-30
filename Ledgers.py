@@ -11,6 +11,6 @@ class Ledgers(BaseQuery):
     def get_query_results(self):
         return super().get_from_API()
     
-    def get_from_Export(self):
-        filename = super()._get_export_from_API(ExportEnum.ledgers)
+    def get_from_Export(self,startDate=None, endDate=None):
+        filename = super()._query_export(ExportEnum.ledgers,startDate=startDate,endDate=endDate)
         return super()._get_from_zip(filename)
