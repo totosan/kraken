@@ -1,6 +1,6 @@
 from os import path
 from BaseQuery import BaseQuery
-from CsvExport import ExportEnum
+from CsvExport import CsvExportEnum
     
 class Ledgers(BaseQuery):
     def __init__(self, config=None):
@@ -12,5 +12,4 @@ class Ledgers(BaseQuery):
         return super().get_from_API()
     
     def get_from_Export(self,startDate=None, endDate=None):
-        filename = super()._query_export(ExportEnum.ledgers,startDate=startDate,endDate=endDate)
-        return super()._get_from_zip(filename)
+        return super().Get_from_Export(CsvExportEnum.ledgers, startDate, endDate)

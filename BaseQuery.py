@@ -5,7 +5,7 @@ import zipfile
 import krakenex
 
 from utils import *
-from CsvExport import CsvExport, ExportEnum
+from CsvExport import CsvExport, CsvExportEnum
 import pandas as pd
 from typing import Optional
 
@@ -79,3 +79,15 @@ class BaseQuery():
             return dataFrame
         else:
             return None
+        
+    def Get_from_Export(self, typeOfExport,startDate=None, endDate=None):
+        reportIdFilename = path.join(DEFAULT_DATA_DIR,"reportId_"+typeOfExport+".json")
+        if(path.exists(reportIdFilename)):
+            print("Open Zip-File fore reading "+typeOfExport)
+            with open(reportIdFilename) as reportIdFP:
+                report_id = json.load(reportIdFP)
+            
+            zipFileName =path.join(DEFAULT_DATA_DIR,typeOfExport+"_"+report_id+".csv.zip")
+        else:                
+            zipFileName = self._query_export(typeOfExport,startDate=startDate,endDate=endDate)
+        return self._get_from_zip(zipFileName)

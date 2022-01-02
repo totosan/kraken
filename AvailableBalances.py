@@ -5,6 +5,7 @@ from pipe import *
 from decimal import Decimal as D
 import pprint
 import collections
+import pandas as pd
 
 DEBUG = False
 class AvailableBalance(object):
@@ -23,8 +24,8 @@ class AvailableBalance(object):
         self._is_error(self.__orders)
         self._is_error(self.__assetPairs)
         
-        self.__market = self.prepareAssets(market)
-        self.__availableBalaces = {}
+        self.Market = self.prepareAssets(market)
+        self.AvailableBalaces = None
         self.__get_available_balances()
 
     def prepareAssets(self, market):
@@ -72,8 +73,8 @@ class AvailableBalance(object):
             base = list(pairs | where(lambda x: pair in x[0]) | select(lambda x: x[1].split('/')[0]))[0]
             quote = list(pairs | where(lambda x: pair in x[0]) | select(lambda x: x[1].split('/')[1]))[0]
             
-            altnameQuote = list(self.__market | where(lambda x: x["altname"] == quote) | select(lambda x: x["name"]))[0]
-            altnameBase = list(self.__market | where(lambda x: x["altname"] == base) | select(lambda x: x["name"]))[0]
+            altnameQuote = list(self.Market | where(lambda x: x["altname"] == quote) | select(lambda x: x["name"]))[0]
+            altnameBase = list(self.Market | where(lambda x: x["altname"] == base) | select(lambda x: x["name"]))[0]
 
             type_ = descr['type']
             if type_ == 'buy':
@@ -83,21 +84,21 @@ class AvailableBalance(object):
                 # selling base - reduce base balance
                 balance[altnameBase] -= volume
 
-            self.__availableBalaces = balance.copy()
+            self.AvailableBalaces = pd.DataFrame([[name,item] for name,item in balance.items()]
+                                                  ,columns=['Currency','Balance'])
             
     def get_avalailable_balances(self):
-        orderedBalance = collections.OrderedDict(sorted(self.__availableBalaces.items()))
-        if DEBUG:
-            for k, v in orderedBalance.items():
-                # convert to string for printing
-                if v == D('0') or v < 0.00001:
-                    #s = '0'
-                    continue
-                else:
-                    s = str(v)
-                # remove trailing zeros (remnant of being decimal)
-                s = s.rstrip('0').rstrip('.') if '.' in s else s
-                #
-                print(k, s)
-        return orderedBalance        
-        
+        return self.AvailableBalaces        
+    
+    def display(self):
+        for k, v in self.items():
+            # convert to string for printing
+            if v == D('0') or v < 0.00001:
+                #s = '0'
+                continue
+            else:
+                s = str(v)
+            # remove trailing zeros (remnant of being decimal)
+            s = s.rstrip('0').rstrip('.') if '.' in s else s
+            #
+            print(k, s)        

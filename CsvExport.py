@@ -23,7 +23,7 @@ from abc import ABC
 from pipe import *
 import krakenex
 
-class ExportEnum(ABC):
+class CsvExportEnum(ABC):
     ledgers = "ledgers"
     trades = "trades"
 

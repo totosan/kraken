@@ -1,7 +1,12 @@
-from os import path
+import json
+from os import path, listdir
+from typing import Optional
 
+from pandas.core.frame import DataFrame
+
+from utils import DEFAULT_DATA_DIR
 from BaseQuery import BaseQuery
-from CsvExport import ExportEnum
+from CsvExport import CsvExportEnum
     
 class TradeHistory(BaseQuery):
     def __init__(self, config=None):
@@ -15,6 +20,5 @@ class TradeHistory(BaseQuery):
     def get_query_results(self):
         return super().get_from_API()
     
-    def get_from_Export(self,startDate=None, endDate=None):
-        filename = super()._query_export(ExportEnum.trades,startDate=startDate,endDate=endDate)
-        return super()._get_from_zip(filename)
+    def get_from_Export(self,startDate=None, endDate=None)-> Optional[DataFrame]:
+        return super().Get_from_Export(CsvExportEnum.trades, startDate, endDate)

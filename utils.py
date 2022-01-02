@@ -4,6 +4,8 @@ import json
 from time import sleep,mktime
 import calendar
 
+DEFAULT_DATA_DIR = './data/'
+
 def posix2DateTime(timeTicks):
     return datetime.utcfromtimestamp(timeTicks).strftime('%Y-%m-%dT%H:%M:%SZ')
 def dateTime2Posix(datetimeString):
@@ -18,7 +20,8 @@ def nix2date(nix_time):
     return datetime.fromtimestamp(nix_time).strftime('%m, %d, %Y')
 
 
-def lastState(loader, fileName, *loaderArgs, sorted="",defaultPath = './data/'):    
+def lastState(loader, fileName, *loaderArgs, sorted=""):    
+    defaultPath = DEFAULT_DATA_DIR
     if(not path.exists(defaultPath)):
         mkdir(defaultPath)
         
